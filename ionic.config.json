@@ -1,0 +1,7 @@
+{
+  "name": "pozajmica-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
