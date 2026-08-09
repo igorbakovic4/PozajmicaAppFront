@@ -1,22 +1,29 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
+import { authGuard } from './guards/auth.guard';
+
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'folder/inbox',
+    redirectTo: 'pozajmice',
     pathMatch: 'full'
   },
   {
-    path: 'folder/:id',
-    loadChildren: () => import('./folder/folder.module').then( m => m.FolderPageModule)
-  }
+    path: 'auth',
+    loadChildren: () =>
+      import('./pages/auth/auth.module').then(m => m.AuthPageModule)
+  },/*
+  {
+    path: 'pozajmice',
+    canActivate: [authGuard],
+    loadChildren: () =>
+      import('./pages/pozajmice/pozajmice.module').then(m => m.PozajmicePageModule)
+  }*/
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
-  ],
+  imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

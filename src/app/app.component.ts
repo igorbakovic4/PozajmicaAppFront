@@ -1,19 +1,33 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+
+import { AuthService } from './services/auth.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
-  standalone: false,
+  standalone: false
 })
-export class AppComponent {
-  public appPages = [
-    { title: 'Inbox', url: '/folder/inbox', icon: 'mail' },
-    { title: 'Outbox', url: '/folder/outbox', icon: 'paper-plane' },
-    { title: 'Favorites', url: '/folder/favorites', icon: 'heart' },
-    { title: 'Archived', url: '/folder/archived', icon: 'archive' },
-    { title: 'Trash', url: '/folder/trash', icon: 'trash' },
-    { title: 'Spam', url: '/folder/spam', icon: 'warning' },
+export class AppComponent implements OnInit {
+  meniStavke = [
+    { naslov: 'Pozajmice', url: '/pozajmice', ikonica: 'wallet-outline' },
+    { naslov: 'Statistika', url: '/statistika', ikonica: 'stats-chart-outline' }
   ];
-  public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
-  constructor() {}
+
+  prijavljen = false;
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.authService.automatskaPrijava();
+    this.authService.prijavljen$.subscribe(stanje => {
+      this.prijavljen = stanje;
+    });
+  }
+
+  odjaviSe(): void {
+    this.authService.odjava();
+    this.router.navigateByUrl('/auth', { replaceUrl: true });
+  }
 }

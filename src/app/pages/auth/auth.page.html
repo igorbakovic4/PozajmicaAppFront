@@ -1,0 +1,77 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ rezimPrijave ? 'Prijava' : 'Registracija' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="12" size-md="8" size-lg="6">
+
+        <div class="zaglavlje">
+          <ion-icon name="wallet-outline"></ion-icon>
+          <h1>Pozajmice</h1>
+          <p>Evidencija pozajmica i rata</p>
+        </div>
+
+        <form #forma="ngForm" (ngSubmit)="posaljiFormu(forma)">
+          <ion-list>
+
+            <ion-item>
+              <ion-input
+                label="Email"
+                labelPlacement="floating"
+                type="email"
+                name="email"
+                ngModel
+                required
+                email
+                #emailKontrola="ngModel">
+              </ion-input>
+            </ion-item>
+            <ion-note color="danger" class="ion-padding-start"
+              *ngIf="emailKontrola.invalid && emailKontrola.touched">
+              Unesite ispravnu email adresu.
+            </ion-note>
+
+            <ion-item>
+              <ion-input
+                label="Lozinka"
+                labelPlacement="floating"
+                type="password"
+                name="lozinka"
+                ngModel
+                required
+                minlength="6"
+                #lozinkaKontrola="ngModel">
+              </ion-input>
+            </ion-item>
+            <ion-note color="danger" class="ion-padding-start"
+              *ngIf="lozinkaKontrola.invalid && lozinkaKontrola.touched">
+              Lozinka mora imati najmanje 6 karaktera.
+            </ion-note>
+
+          </ion-list>
+
+          <ion-button
+            type="submit"
+            expand="block"
+            class="ion-margin-top"
+            [disabled]="!forma.valid || ucitavanje">
+            {{ rezimPrijave ? 'Prijavi se' : 'Registruj se' }}
+          </ion-button>
+
+          <ion-button
+            type="button"
+            expand="block"
+            fill="clear"
+            (click)="promeniRezim()">
+            {{ rezimPrijave ? 'Nemam nalog — registruj me' : 'Imam nalog — prijavi me' }}
+          </ion-button>
+        </form>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
