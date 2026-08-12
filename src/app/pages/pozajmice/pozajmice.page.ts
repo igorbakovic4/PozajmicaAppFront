@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController, ModalController } from '@ionic/angular';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { PozajmicaService } from '../../services/pozajmica.service';
 import { AuthService } from '../../services/auth.service';
@@ -51,7 +51,7 @@ export class PozajmicePage implements OnInit, OnDestroy {
   osvezi(dogadjaj: any): void {
     this.pozajmicaService.ucitajPozajmice().subscribe({
       next: () => dogadjaj.target.complete(),
-      error: async greska => {
+      error: async (greska: Error) => {
         dogadjaj.target.complete();
         await this.prikaziGresku(greska.message);
       }
@@ -62,9 +62,14 @@ export class PozajmicePage implements OnInit, OnDestroy {
     this.router.navigate(['/pozajmice', pozajmica.id]);
   }
 
-  async otvoriFormu(): Promise<void> {
+  async otvoriFormu(postojeca?: Pozajmica, klizac?: any): Promise<void> {
+    if (klizac) {
+      await klizac.close();
+    }
+
     const modal = await this.modalController.create({
-      component: NovaPozajmicaComponent
+      component: NovaPozajmicaComponent,
+      componentProps: { postojeca }
     });
     await modal.present();
 
@@ -73,20 +78,35 @@ export class PozajmicePage implements OnInit, OnDestroy {
       return;
     }
 
-    const ucitavac = await this.loadingController.create({
-      message: 'Čuvanje...'
-    });
+    const ucitavac = await this.loadingController.create({ message: 'Čuvanje...' });
     await ucitavac.present();
 
-    this.pozajmicaService
-      .dodajPozajmicu(data.duznik, data.iznos, data.datum, data.opis)
-      .subscribe({
-        next: () => ucitavac.dismiss(),
-        error: async greska => {
-          await ucitavac.dismiss();
-          await this.prikaziGresku(greska.message);
+    const zahtev: Observable<unknown> = postojeca
+      ? this.pozajmicaService.izmeniPozajmicu(postojeca.id, {
+          duznik: data.duznik,
+          iznos: data.iznos,
+          datum: data.datum,
+          opis: data.opis
+        })
+      : this.pozajmicaService.dodajPozajmicu(
+          data.duznik,
+          data.iznos,
+          data.datum,
+          data.opis
+        );
+
+    zahtev.subscribe({
+      next: async () => {
+        await ucitavac.dismiss();
+        if (postojeca) {
+          this.pozajmicaService.osveziStatus(postojeca.id).subscribe();
         }
-      });
+      },
+      error: async (greska: Error) => {
+        await ucitavac.dismiss();
+        await this.prikaziGresku(greska.message);
+      }
+    });
   }
 
   async potvrdiBrisanje(pozajmica: Pozajmica, klizac: any): Promise<void> {
@@ -112,7 +132,6 @@ export class PozajmicePage implements OnInit, OnDestroy {
     this.router.navigateByUrl('/auth', { replaceUrl: true });
   }
 
-  // Pomoćne metode za šablon
   preostalo(pozajmica: Pozajmica): number {
     return preostaliDug(pozajmica);
   }
@@ -129,7 +148,7 @@ export class PozajmicePage implements OnInit, OnDestroy {
     this.ucitavanje = true;
     this.pozajmicaService.ucitajPozajmice().subscribe({
       next: () => (this.ucitavanje = false),
-      error: async greska => {
+      error: async (greska: Error) => {
         this.ucitavanje = false;
         await this.prikaziGresku(greska.message);
       }
@@ -138,7 +157,7 @@ export class PozajmicePage implements OnInit, OnDestroy {
 
   private obrisi(id: string): void {
     this.pozajmicaService.obrisiPozajmicu(id).subscribe({
-      error: async greska => this.prikaziGresku(greska.message)
+      error: async (greska: Error) => this.prikaziGresku(greska.message)
     });
   }
 

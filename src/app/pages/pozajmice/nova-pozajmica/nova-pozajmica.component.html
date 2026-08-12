@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Nova pozajmica</ion-title>
+    <ion-title>{{ naslov }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="odustani()">Zatvori</ion-button>
     </ion-buttons>
@@ -17,7 +17,7 @@
           labelPlacement="floating"
           type="text"
           name="duznik"
-          ngModel
+          [(ngModel)]="duznik"
           required
           maxlength="60">
         </ion-input>
@@ -29,11 +29,16 @@
           labelPlacement="floating"
           type="number"
           name="iznos"
-          ngModel
+          [(ngModel)]="iznos"
           required
-          min="1">
+          [min]="najmanjiIznos"
+          #iznosKontrola="ngModel">
         </ion-input>
       </ion-item>
+      <ion-note color="danger" class="ion-padding-start"
+        *ngIf="iznosKontrola.invalid && iznosKontrola.touched && rezimIzmene">
+        Iznos ne može biti manji od već vraćenog dela ({{ najmanjiIznos | number }} RSD).
+      </ion-note>
 
       <ion-item>
         <ion-label position="stacked">Datum</ion-label>
@@ -44,7 +49,7 @@
               id="datumPozajmice"
               presentation="date"
               name="datum"
-              [ngModel]="danas"
+              [(ngModel)]="datum"
               required>
             </ion-datetime>
           </ng-template>
@@ -56,7 +61,7 @@
           label="Napomena"
           labelPlacement="floating"
           name="opis"
-          ngModel
+          [(ngModel)]="opis"
           rows="3"
           maxlength="200">
         </ion-textarea>
@@ -69,7 +74,7 @@
       expand="block"
       class="ion-margin-top"
       [disabled]="!forma.valid">
-      Sačuvaj
+      {{ rezimIzmene ? 'Sačuvaj izmene' : 'Sačuvaj' }}
     </ion-button>
   </form>
 </ion-content>

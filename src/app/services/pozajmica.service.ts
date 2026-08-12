@@ -228,7 +228,10 @@ export class PozajmicaService {
     return this.pozajmiceSubject.value.find(p => p.id === id);
   }
 
-  private azurirajLokalno(id: string, izmene: Partial<PozajmicaDto>): void {
+  private azurirajLokalno(
+    id: string,
+    izmene: Partial<Omit<PozajmicaDto, 'rate'>>
+  ): void {
     const azurirane = this.pozajmiceSubject.value.map(p =>
       p.id === id ? { ...p, ...izmene } : p
     );
@@ -247,5 +250,9 @@ export class PozajmicaService {
       p.id === pozajmicaId ? { ...p, rate: p.rate.filter(r => r.id !== rataId) } : p
     );
     this.pozajmiceSubject.next(azurirane);
+  }
+
+  osveziStatus(pozajmicaId: string): Observable<void> {
+    return this.proveriZatvaranje(pozajmicaId);
   }
 }
