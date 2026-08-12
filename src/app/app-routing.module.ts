@@ -13,13 +13,17 @@ const routes: Routes = [
     path: 'auth',
     loadChildren: () =>
       import('./pages/auth/auth.module').then(m => m.AuthPageModule)
-  },/*
+  },  {
+    path: 'pozajmice',
+    loadChildren: () => import('./pages/pozajmice/pozajmice.module').then( m => m.PozajmicePageModule)
+  },
+
   {
     path: 'pozajmice',
     canActivate: [authGuard],
     loadChildren: () =>
       import('./pages/pozajmice/pozajmice.module').then(m => m.PozajmicePageModule)
-  }*/
+  }
 ];
 
 @NgModule({

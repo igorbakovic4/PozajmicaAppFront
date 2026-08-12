@@ -1,0 +1,37 @@
+.poruka {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--ion-color-medium);
+
+  ion-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0.5rem 0 0;
+  }
+}
+
+.iznosi {
+  margin-bottom: 0.5rem;
+}
+
+ion-progress-bar {
+  margin-top: 0.25rem;
+  border-radius: 4px;
+}
+
+ion-badge {
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}

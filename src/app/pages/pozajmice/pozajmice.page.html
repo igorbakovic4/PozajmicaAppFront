@@ -1,0 +1,71 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Pozajmice</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="odjaviSe()">
+        <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-refresher slot="fixed" (ionRefresh)="osvezi($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="poruka" *ngIf="ucitavanje">
+    <ion-spinner></ion-spinner>
+  </div>
+
+  <div class="poruka" *ngIf="!ucitavanje && pozajmice.length === 0">
+    <ion-icon name="wallet-outline"></ion-icon>
+    <h2>Nema pozajmica</h2>
+    <p>Dodajte prvu pozajmicu dugmetom u donjem uglu.</p>
+  </div>
+
+  <ion-list *ngIf="!ucitavanje && pozajmice.length > 0">
+    <ion-item-sliding *ngFor="let pozajmica of pozajmice" #klizac>
+
+      <ion-item button detail (click)="otvoriDetalj(pozajmica)">
+        <ion-label>
+          <h2>
+            {{ pozajmica.duznik }}
+            <ion-badge color="success" *ngIf="pozajmica.zatvorena">Izmireno</ion-badge>
+          </h2>
+          <p>{{ pozajmica.datum | date: 'dd.MM.yyyy.' }}</p>
+          <p class="iznosi">
+            Vraćeno {{ vraceno(pozajmica) | number }} od
+            {{ pozajmica.iznos | number }} RSD
+          </p>
+          <ion-progress-bar
+            [value]="procenat(pozajmica)"
+            [color]="pozajmica.zatvorena ? 'success' : 'primary'">
+          </ion-progress-bar>
+        </ion-label>
+
+        <ion-note slot="end" [color]="pozajmica.zatvorena ? 'success' : 'danger'">
+          {{ preostalo(pozajmica) | number }} RSD
+        </ion-note>
+      </ion-item>
+
+      <ion-item-options side="end">
+        <ion-item-option color="danger" (click)="potvrdiBrisanje(pozajmica, klizac)">
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+
+    </ion-item-sliding>
+  </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="otvoriFormu()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>
