@@ -35,3 +35,30 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+/* Zajednički stilovi aplikacije */
+
+ion-content {
+  --background: #fafbfb;
+}
+
+ion-list-header {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ion-color-medium);
+  min-height: 40px;
+}
+
+ion-badge {
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+ion-note[slot="end"] {
+  font-size: 1rem;
+  font-weight: 600;
+  align-self: center;
+}

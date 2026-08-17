@@ -1,2 +1,117 @@
 // For information on how to create your own theme, please refer to:
 // https://ionicframework.com/docs/theming/
+// Ionic Variables and Theming
+// http://ionicframework.com/docs/theming/
+
+:root {
+  /** primary — tamnozelena, boja novca i pouzdanosti **/
+  --ion-color-primary: #1b7a5a;
+  --ion-color-primary-rgb: 27, 122, 90;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #186b4f;
+  --ion-color-primary-tint: #32876b;
+
+  /** secondary **/
+  --ion-color-secondary: #2d8f7b;
+  --ion-color-secondary-rgb: 45, 143, 123;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #287e6c;
+  --ion-color-secondary-tint: #429a88;
+
+  /** tertiary **/
+  --ion-color-tertiary: #4a6fa5;
+  --ion-color-tertiary-rgb: 74, 111, 165;
+  --ion-color-tertiary-contrast: #ffffff;
+  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+  --ion-color-tertiary-shade: #416291;
+  --ion-color-tertiary-tint: #5c7dae;
+
+  /** success — izmirene pozajmice **/
+  --ion-color-success: #2dd36f;
+  --ion-color-success-rgb: 45, 211, 111;
+  --ion-color-success-contrast: #000000;
+  --ion-color-success-contrast-rgb: 0, 0, 0;
+  --ion-color-success-shade: #28ba62;
+  --ion-color-success-tint: #42d77d;
+
+  /** warning **/
+  --ion-color-warning: #ffc409;
+  --ion-color-warning-rgb: 255, 196, 9;
+  --ion-color-warning-contrast: #000000;
+  --ion-color-warning-contrast-rgb: 0, 0, 0;
+  --ion-color-warning-shade: #e0ac08;
+  --ion-color-warning-tint: #ffca22;
+
+  /** danger — preostali dug **/
+  --ion-color-danger: #d94f4f;
+  --ion-color-danger-rgb: 217, 79, 79;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #bf4646;
+  --ion-color-danger-tint: #dd6161;
+
+  /** dark **/
+  --ion-color-dark: #1c2321;
+  --ion-color-dark-rgb: 28, 35, 33;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade: #191f1d;
+  --ion-color-dark-tint: #333937;
+
+  /** medium **/
+  --ion-color-medium: #7d8a86;
+  --ion-color-medium-rgb: 125, 138, 134;
+  --ion-color-medium-contrast: #ffffff;
+  --ion-color-medium-contrast-rgb: 255, 255, 255;
+  --ion-color-medium-shade: #6e7976;
+  --ion-color-medium-tint: #8a9692;
+
+  /** light **/
+  --ion-color-light: #f2f5f4;
+  --ion-color-light-rgb: 242, 245, 244;
+  --ion-color-light-contrast: #000000;
+  --ion-color-light-contrast-rgb: 0, 0, 0;
+  --ion-color-light-shade: #d5d8d7;
+  --ion-color-light-tint: #f3f6f5;
+
+  /** zaobljenost kartica i dugmadi **/
+  --ion-card-radius: 14px;
+}
+
+ion-card {
+  border-radius: var(--ion-card-radius);
+}
+
+ion-button {
+  --border-radius: 10px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    --ion-background-color: #121614;
+    --ion-background-color-rgb: 18, 22, 20;
+
+    --ion-text-color: #eef2f0;
+    --ion-text-color-rgb: 238, 242, 240;
+
+    --ion-color-light: #1f2523;
+    --ion-color-light-rgb: 31, 37, 35;
+    --ion-color-light-contrast: #ffffff;
+    --ion-color-light-contrast-rgb: 255, 255, 255;
+    --ion-color-light-shade: #1b201e;
+    --ion-color-light-tint: #353a38;
+
+    --ion-item-background: #1a1f1d;
+    --ion-card-background: #1a1f1d;
+    --ion-toolbar-background: #1a1f1d;
+  }
+
+  ion-content {
+    --background: #121614;
+  }
+}
