@@ -1,0 +1,96 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/pozajmice"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ pozajmica?.duznik || 'Detalji' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div class="poruka" *ngIf="ucitavanje">
+    <ion-spinner></ion-spinner>
+  </div>
+
+  <ng-container *ngIf="!ucitavanje && pozajmica as p">
+
+    <ion-card class="pregled">
+      <ion-card-header>
+        <ion-card-subtitle>
+          Pozajmljeno {{ p.datum | date: 'dd.MM.yyyy.' }}
+        </ion-card-subtitle>
+        <ion-card-title>
+          {{ p.duznik }}
+          <ion-badge color="success" *ngIf="p.zatvorena">Izmireno</ion-badge>
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p class="opis" *ngIf="p.opis">{{ p.opis }}</p>
+
+        <div class="brojevi">
+          <div class="stavka">
+            <span class="oznaka">Ukupno</span>
+            <span class="vrednost">{{ p.iznos | number }}</span>
+          </div>
+          <div class="stavka">
+            <span class="oznaka">Vraćeno</span>
+            <span class="vrednost uspeh">{{ vraceno | number }}</span>
+          </div>
+          <div class="stavka">
+            <span class="oznaka">Preostalo</span>
+            <span class="vrednost" [class.opasnost]="!p.zatvorena">
+              {{ preostalo | number }}
+            </span>
+          </div>
+        </div>
+
+        <ion-progress-bar
+          [value]="procenat"
+          [color]="p.zatvorena ? 'success' : 'primary'">
+        </ion-progress-bar>
+        <p class="procenat">{{ procenatTekst }}% izmireno</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-list-header>
+      <ion-label>Uplate ({{ p.rate.length }})</ion-label>
+    </ion-list-header>
+
+    <div class="poruka mala" *ngIf="p.rate.length === 0">
+      <ion-icon name="receipt-outline"></ion-icon>
+      <p>Još nema zabeleženih uplata.</p>
+    </div>
+
+    <ion-list *ngIf="p.rate.length > 0">
+      <ion-item-sliding *ngFor="let rata of sortiraneRate" #klizac>
+
+        <ion-item>
+          <ion-icon slot="start" name="arrow-down-circle-outline" color="success">
+          </ion-icon>
+          <ion-label>
+            <h2>{{ rata.iznos | number }} RSD</h2>
+            <p>{{ rata.datum | date: 'dd.MM.yyyy.' }}</p>
+            <p *ngIf="rata.napomena">{{ rata.napomena }}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item-options side="end">
+          <ion-item-option color="danger" (click)="potvrdiBrisanjeRate(rata, klizac)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+
+      </ion-item-sliding>
+    </ion-list>
+
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="!p.zatvorena">
+      <ion-fab-button (click)="otvoriFormuRate()">
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+
+  </ng-container>
+
+</ion-content>

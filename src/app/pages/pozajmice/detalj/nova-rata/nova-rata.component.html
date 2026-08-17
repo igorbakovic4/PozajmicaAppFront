@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Nova uplata</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="odustani()">Zatvori</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-note class="podsetnik">
+    Preostali dug: <strong>{{ ostatak | number }} RSD</strong>
+  </ion-note>
+
+  <form #forma="ngForm" (ngSubmit)="potvrdi(forma)">
+    <ion-list>
+
+      <ion-item>
+        <ion-input
+          label="Iznos uplate (RSD)"
+          labelPlacement="floating"
+          type="number"
+          name="iznos"
+          [(ngModel)]="iznos"
+          required
+          min="1"
+          [max]="ostatak"
+          #iznosKontrola="ngModel">
+        </ion-input>
+      </ion-item>
+      <ion-note color="danger" class="ion-padding-start"
+        *ngIf="iznosKontrola.invalid && iznosKontrola.touched">
+        Unesite iznos između 1 i {{ ostatak | number }} RSD.
+      </ion-note>
+
+      <ion-button fill="clear" size="small" type="button" (click)="uplatiCeoIznos()">
+        Uplati ceo preostali iznos
+      </ion-button>
+
+      <ion-item>
+        <ion-label position="stacked">Datum uplate</ion-label>
+        <ion-datetime-button datetime="datumRate"></ion-datetime-button>
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime
+              id="datumRate"
+              presentation="date"
+              name="datum"
+              [(ngModel)]="datum"
+              required>
+            </ion-datetime>
+          </ng-template>
+        </ion-modal>
+      </ion-item>
+
+      <ion-item>
+        <ion-input
+          label="Napomena"
+          labelPlacement="floating"
+          type="text"
+          name="napomena"
+          [(ngModel)]="napomena"
+          maxlength="100">
+        </ion-input>
+      </ion-item>
+
+    </ion-list>
+
+    <ion-button
+      type="submit"
+      expand="block"
+      class="ion-margin-top"
+      [disabled]="!forma.valid">
+      Sačuvaj uplatu
+    </ion-button>
+  </form>
+</ion-content>

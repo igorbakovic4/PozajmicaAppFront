@@ -7,11 +7,16 @@ const routes: Routes = [
   {
     path: '',
     component: PozajmicePage
+  },
+  {
+    path: ':id',
+    loadChildren: () =>
+      import('./detalj/detalj.module').then(m => m.DetaljPageModule)
   }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
 export class PozajmicePageRoutingModule {}
