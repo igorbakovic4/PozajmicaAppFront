@@ -10,6 +10,29 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+
+  <ion-toolbar *ngIf="pozajmice.length > 0">
+    <ion-searchbar
+      placeholder="Pretraga po dužniku"
+      [value]="pretraga"
+      (ionInput)="promeniPretragu($event)"
+      debounce="200">
+    </ion-searchbar>
+  </ion-toolbar>
+
+  <ion-toolbar *ngIf="pozajmice.length > 0">
+    <ion-segment [value]="filter" (ionChange)="promeniFilter($event)">
+      <ion-segment-button value="sve">
+        <ion-label>Sve</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="aktivne">
+        <ion-label>Aktivne ({{ brojAktivnih }})</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="izmirene">
+        <ion-label>Izmirene ({{ brojIzmirenih }})</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content>
@@ -22,14 +45,26 @@
     <ion-spinner></ion-spinner>
   </div>
 
+  <div class="ukupno" *ngIf="!ucitavanje && ukupnoPreostalo > 0">
+    Ukupno potražujete <strong>{{ ukupnoPreostalo | number }} RSD</strong>
+  </div>
+
   <div class="poruka" *ngIf="!ucitavanje && pozajmice.length === 0">
     <ion-icon name="wallet-outline"></ion-icon>
     <h2>Nema pozajmica</h2>
     <p>Dodajte prvu pozajmicu dugmetom u donjem uglu.</p>
   </div>
 
-  <ion-list *ngIf="!ucitavanje && pozajmice.length > 0">
-    <ion-item-sliding *ngFor="let pozajmica of pozajmice" #klizac>
+  <div class="poruka" *ngIf="nemaRezultata">
+    <ion-icon name="search-outline"></ion-icon>
+    <h2>Nema rezultata</h2>
+    <p>Nijedna pozajmica ne odgovara pretrazi.</p>
+  </div>
+
+  <ion-list *ngIf="!ucitavanje">
+    <ion-item-sliding
+      *ngFor="let pozajmica of prikazanePozajmice; trackBy: pratiPoId"
+      #klizac>
 
       <ion-item button detail (click)="otvoriDetalj(pozajmica)">
         <ion-label>

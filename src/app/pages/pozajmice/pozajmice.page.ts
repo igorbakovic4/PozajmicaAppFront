@@ -13,6 +13,8 @@ import {
 } from '../../models/pozajmica.model';
 import { NovaPozajmicaComponent } from './nova-pozajmica/nova-pozajmica.component';
 
+type Filter = 'sve' | 'aktivne' | 'izmirene';
+
 @Component({
   selector: 'app-pozajmice',
   templateUrl: './pozajmice.page.html',
@@ -22,6 +24,9 @@ import { NovaPozajmicaComponent } from './nova-pozajmica/nova-pozajmica.componen
 export class PozajmicePage implements OnInit, OnDestroy {
   pozajmice: Pozajmica[] = [];
   ucitavanje = true;
+
+  pretraga = '';
+  filter: Filter = 'sve';
 
   private pretplata?: Subscription;
 
@@ -47,6 +52,63 @@ export class PozajmicePage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.pretplata?.unsubscribe();
   }
+
+  // ---------- FILTRIRANJE ----------
+
+  get prikazanePozajmice(): Pozajmica[] {
+    const tekst = this.pretraga.trim().toLowerCase();
+
+    return this.pozajmice
+      .filter(p => {
+        if (this.filter === 'aktivne' && p.zatvorena) {
+          return false;
+        }
+        if (this.filter === 'izmirene' && !p.zatvorena) {
+          return false;
+        }
+        if (tekst && !p.duznik.toLowerCase().includes(tekst)) {
+          return false;
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        // Aktivne prvo, pa novije prvo
+        if (a.zatvorena !== b.zatvorena) {
+          return a.zatvorena ? 1 : -1;
+        }
+        return b.datum.localeCompare(a.datum);
+      });
+  }
+
+  get brojAktivnih(): number {
+    return this.pozajmice.filter(p => !p.zatvorena).length;
+  }
+
+  get brojIzmirenih(): number {
+    return this.pozajmice.filter(p => p.zatvorena).length;
+  }
+
+  get ukupnoPreostalo(): number {
+    return this.pozajmice.reduce((zbir, p) => zbir + preostaliDug(p), 0);
+  }
+
+  promeniFilter(dogadjaj: any): void {
+    this.filter = dogadjaj.detail.value as Filter;
+  }
+
+  promeniPretragu(dogadjaj: any): void {
+    this.pretraga = dogadjaj.detail.value ?? '';
+  }
+
+  get nemaRezultata(): boolean {
+    return (
+      !this.ucitavanje &&
+      this.pozajmice.length > 0 &&
+      this.prikazanePozajmice.length === 0
+    );
+  }
+
+  // ---------- AKCIJE ----------
 
   osvezi(dogadjaj: any): void {
     this.pozajmicaService.ucitajPozajmice().subscribe({
@@ -132,6 +194,8 @@ export class PozajmicePage implements OnInit, OnDestroy {
     this.router.navigateByUrl('/auth', { replaceUrl: true });
   }
 
+  // ---------- POMOĆNE ZA ŠABLON ----------
+
   preostalo(pozajmica: Pozajmica): number {
     return preostaliDug(pozajmica);
   }
@@ -144,12 +208,22 @@ export class PozajmicePage implements OnInit, OnDestroy {
     return procenatVracenog(pozajmica) / 100;
   }
 
+  pratiPoId(_index: number, pozajmica: Pozajmica): string {
+    return pozajmica.id;
+  }
+
+  // ---------- PRIVATNE ----------
+
   private ucitajPodatke(): void {
     this.ucitavanje = true;
     this.pozajmicaService.ucitajPozajmice().subscribe({
       next: () => (this.ucitavanje = false),
       error: async (greska: Error) => {
         this.ucitavanje = false;
+        if (greska.message === 'Niste prijavljeni.') {
+          this.router.navigateByUrl('/auth', { replaceUrl: true });
+          return;
+        }
         await this.prikaziGresku(greska.message);
       }
     });
