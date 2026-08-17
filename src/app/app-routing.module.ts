@@ -19,6 +19,12 @@ const routes: Routes = [
     canActivate: [authGuard],
     loadChildren: () =>
       import('./pages/pozajmice/pozajmice.module').then(m => m.PozajmicePageModule)
+  },
+  {
+    path: 'statistika',
+    canActivate: [authGuard],
+    loadChildren: () =>
+      import('./pages/statistika/statistika.module').then(m => m.StatistikaPageModule)
   }
 ];
 

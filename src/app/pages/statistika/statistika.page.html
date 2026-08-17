@@ -1,0 +1,127 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Statistika</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-refresher slot="fixed" (ionRefresh)="osvezi($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="poruka" *ngIf="ucitavanje">
+    <ion-spinner></ion-spinner>
+  </div>
+
+  <div class="poruka" *ngIf="!ucitavanje && brojUkupno === 0">
+    <ion-icon name="stats-chart-outline"></ion-icon>
+    <h2>Nema podataka</h2>
+    <p>Statistika će se pojaviti kada dodate prvu pozajmicu.</p>
+  </div>
+
+  <ng-container *ngIf="!ucitavanje && brojUkupno > 0">
+
+    <ion-card class="glavna">
+      <ion-card-header>
+        <ion-card-subtitle>Trenutno potražujete</ion-card-subtitle>
+        <ion-card-title class="veliki">
+          {{ ukupnoPreostalo | number }} RSD
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-progress-bar [value]="procenatNaplacenog" color="success">
+        </ion-progress-bar>
+        <p class="procenat">
+          Naplaćeno {{ procenatTekst }}% od ukupno pozajmljenog
+        </p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-grid class="kartice">
+      <ion-row>
+        <ion-col size="6">
+          <div class="kartica">
+            <span class="oznaka">Pozajmljeno</span>
+            <span class="vrednost">{{ ukupnoPozajmljeno | number }}</span>
+          </div>
+        </ion-col>
+        <ion-col size="6">
+          <div class="kartica">
+            <span class="oznaka">Vraćeno</span>
+            <span class="vrednost uspeh">{{ ukupnoVraceno | number }}</span>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-list inset="true">
+      <ion-item>
+        <ion-icon slot="start" name="documents-outline" color="primary"></ion-icon>
+        <ion-label>Ukupno pozajmica</ion-label>
+        <ion-note slot="end">{{ brojUkupno }}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-icon slot="start" name="time-outline" color="warning"></ion-icon>
+        <ion-label>Aktivne</ion-label>
+        <ion-note slot="end">{{ brojAktivnih }}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-icon slot="start" name="checkmark-circle-outline" color="success"></ion-icon>
+        <ion-label>Izmirene</ion-label>
+        <ion-note slot="end">{{ brojIzmirenih }}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-icon slot="start" name="receipt-outline" color="medium"></ion-icon>
+        <ion-label>Zabeleženih uplata</ion-label>
+        <ion-note slot="end">{{ brojUplata }}</ion-note>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-icon slot="start" name="calculator-outline" color="medium"></ion-icon>
+        <ion-label>Prosečna pozajmica</ion-label>
+        <ion-note slot="end">{{ prosecnaPozajmica | number: '1.0-0' }} RSD</ion-note>
+      </ion-item>
+    </ion-list>
+
+    <ion-item lines="none" class="istaknuto" *ngIf="najveciDuznik as duznik">
+      <ion-icon slot="start" name="person-outline" color="danger"></ion-icon>
+      <ion-label>
+        <p>Najveće dugovanje</p>
+        <h2>{{ duznik.duznik }}</h2>
+      </ion-label>
+      <ion-note slot="end" color="danger">
+        {{ duznik.preostalo | number }} RSD
+      </ion-note>
+    </ion-item>
+
+    <ion-list-header>
+      <ion-label>Po dužnicima</ion-label>
+    </ion-list-header>
+
+    <ion-list>
+      <ion-item *ngFor="let stavka of poDuznicima">
+        <ion-label>
+          <h2>{{ stavka.duznik }}</h2>
+          <p>
+            {{ stavka.brojPozajmica }}
+            {{ stavka.brojPozajmica === 1 ? 'pozajmica' : 'pozajmice' }} ·
+            vraćeno {{ stavka.vraceno | number }} od {{ stavka.ukupno | number }}
+          </p>
+          <ion-progress-bar
+            [value]="udeo(stavka)"
+            [color]="stavka.preostalo === 0 ? 'success' : 'primary'">
+          </ion-progress-bar>
+        </ion-label>
+        <ion-note slot="end" [color]="stavka.preostalo === 0 ? 'success' : 'danger'">
+          {{ stavka.preostalo | number }}
+        </ion-note>
+      </ion-item>
+    </ion-list>
+
+  </ng-container>
+
+</ion-content>
